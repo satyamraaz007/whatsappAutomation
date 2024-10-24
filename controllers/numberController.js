@@ -1,4 +1,58 @@
 const WhatsAppNumber = require('../models/whatsappNumber');
+const xlsx = require('xlsx');
+const path = require('path');
+
+
+// Add numbers from Excel or CSV file
+exports.addNumbersFromFile = (req, res) => {
+  if (!req.file || !req.file.path) {
+    return res.status(400).json({ message: 'File is required' });
+  }
+
+  const filePath = path.resolve(req.file.path);
+  const workbook = xlsx.readFile(filePath);
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+
+  // Parse the file to get whatsapp_number column
+  const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+  const headers = data[0];
+  const whatsappNumberIndex = headers.indexOf('whatsapp_number');
+
+  if (whatsappNumberIndex === -1) {
+    return res.status(400).json({ message: 'whatsapp_number column is missing' });
+  }
+
+  const fileNumbers = data.slice(1).map(row => row[whatsappNumberIndex]);
+
+  // Get all numbers from the database
+  WhatsAppNumber.getAll()
+    .then(numbersInDb => {
+      const numbersInDbSet = new Set(numbersInDb.map(n => n.phone_number));
+
+      // Find numbers that are in the file but not in the database (new numbers)
+      const newNumbers = fileNumbers.filter(num => !numbersInDbSet.has(num));
+
+      // Find numbers that are in the database but not in the file (to deactivate)
+      const numbersToDeactivate = numbersInDb
+        .filter(n => !fileNumbers.includes(n.phone_number))
+        .map(n => n.phone_number);
+
+      // Insert new numbers as 'ACTIVE'
+      const insertPromises = newNumbers.map(num =>
+        WhatsAppNumber.add({ number: num, status: 'ACTIVE' })
+      );
+
+      // Deactivate numbers not in the file
+      const deactivatePromises = numbersToDeactivate.map(num =>
+        WhatsAppNumber.updateStatusByNumber(num, 'DEACTIVE')
+      );
+
+      return Promise.all([...insertPromises, ...deactivatePromises]);
+    })
+    .then(() => res.status(201).json({ message: 'Numbers processed successfully' }))
+    .catch(err => res.status(500).json({ error: 'Error processing numbers', details: err }));
+};
 
 // Get all WhatsApp numbers
 exports.getAllNumbers = (req, res) => {

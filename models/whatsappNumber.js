@@ -24,6 +24,19 @@ class WhatsAppNumber {
     });
   }
 
+  static updateStatusByNumber(phoneNumber, status) {
+    return new Promise((resolve, reject) => {
+      db.query(
+        "UPDATE whatsapp_numbers SET status = ? WHERE phone_number = ?",
+        [status, phoneNumber],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
+
   static update(id, phoneNumber) {
     return new Promise((resolve, reject) => {
       db.query(
