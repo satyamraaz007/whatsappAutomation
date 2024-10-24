@@ -17,3 +17,6 @@ build/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# wwebjs_cache files
+.wwebjs_cache/
