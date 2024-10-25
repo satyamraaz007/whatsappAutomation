@@ -20,3 +20,6 @@ Thumbs.db
 
 # wwebjs_cache files
 .wwebjs_cache/
+
+# uploads files
+uploads/
