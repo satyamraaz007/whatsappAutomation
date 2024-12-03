@@ -106,3 +106,22 @@ exports.deleteNumber = (req, res) => {
     .then(() => res.json({ message: 'Number deleted successfully' }))
     .catch(err => res.status(500).json({ error: 'Error deleting number', details: err }));
 };
+
+
+
+// Update the status of all numbers to ACTIVE or DEACTIVE
+exports.updateAllNumbersStatus = (req, res) => {
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: 'Status is required' });
+  }
+
+  // Update the status of all numbers
+  WhatsAppNumber.updateAllStatus(status)
+    .then(() => res.status(200).json({ message: `All numbers status updated to ${status}` }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error updating status for all numbers', details: err });
+    });
+};

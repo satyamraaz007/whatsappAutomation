@@ -1,4 +1,4 @@
-const { initializeWhatsApp, logoutWhatsApp } = require('../whatsappClient/whatsappClient');
+const { initializeWhatsApp, logoutWhatsApp, setQrChangeCallback } = require('../whatsappClient/whatsappClient');
 
 // Controller for handling QR code retrieval
 const getQrCode = (req, res) => {
@@ -33,6 +33,15 @@ const logout = (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error during logout.' });
   }
 };
+
+// Set QR code update callback
+setQrChangeCallback((newQrCode, loginMessage) => {
+  if (newQrCode) {
+    console.log('New QR code:', newQrCode);
+  } else if (loginMessage) {
+    console.log(loginMessage);
+  }
+});
 
 module.exports = {
   getQrCode,

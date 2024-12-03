@@ -76,6 +76,22 @@ class WhatsAppNumber {
       );
     });
   }
+
+  // Method to update the status of all WhatsApp numbers at a time
+  static updateAllStatus(status) {
+    return new Promise((resolve, reject) => {
+      db.query(
+        "UPDATE whatsapp_numbers SET status = ?",
+        [status],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
+  
+  
 }
 
 module.exports = WhatsAppNumber;
