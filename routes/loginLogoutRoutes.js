@@ -8,4 +8,7 @@ router.get('/get-qr', loginLogoutController.getQrCode);
 // Route to handle logout
 router.post('/logout', loginLogoutController.logout);
 
+// Route for subscribing to QR code and login updates
+router.get('/subscribe-updates', loginLogoutController.subscribeStatusUpdates);
+
 module.exports = router;

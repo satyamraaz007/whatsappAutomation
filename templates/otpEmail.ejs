@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        text-align: center;
+      }
+      .otp {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Your Login OTP</h1>
+      <p>Use the OTP below to login to your account:</p>
+      <div class="otp"><%= otp %></div>
+      <p>This OTP is valid for 10 minutes.</p>
+    </div>
+  </body>
+</html>

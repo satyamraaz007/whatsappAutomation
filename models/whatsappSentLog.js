@@ -11,6 +11,7 @@ class WhatsAppLog {
    * @param {string} logData.status - The status of the message (e.g., SENT, FAILED)
    * @param {string} [logData.message_id] - The unique message ID (optional)
    * @param {Date} [logData.scheduled_time] - The scheduled time for the message (optional)
+   * @param {number} logData.user_id - The user ID associated with the message
    */
   static saveSentLog({
     phone_number,
@@ -20,11 +21,13 @@ class WhatsAppLog {
     status,
     message_id = null,
     scheduled_time = null,
+    user_id,
   }) {
     return new Promise((resolve, reject) => {
       const query = `
-      INSERT INTO whatsapp_sent_logs (phone_number, message, image, sent_time, status, message_id, scheduled_time)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      INSERT INTO whatsapp_sent_logs 
+      (phone_number, message, image, sent_time, status, message_id, scheduled_time, user_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
       const values = [
         phone_number,
         message,
@@ -33,7 +36,8 @@ class WhatsAppLog {
         status,
         message_id,
         scheduled_time,
-      ]; // Ensure scheduled_time is included here
+        user_id,
+      ];
 
       db.query(query, values, (err, results) => {
         if (err) return reject(err);

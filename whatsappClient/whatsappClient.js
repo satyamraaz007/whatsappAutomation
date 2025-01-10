@@ -15,7 +15,7 @@ function initializeWhatsApp() {
     client.on('qr', (qr) => {
       if (!global.isAuthenticated) {
         global.qrCodeString = qr;
-        console.log('QR code received, you can scan it from Postman!');
+        // console.log('QR code received, you can scan it from Postman!');
         if (qrChangeCallback) {
           qrChangeCallback(qr); // Notify the controller about the new QR code
         }
